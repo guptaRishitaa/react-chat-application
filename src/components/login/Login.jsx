@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword
 } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import upload from "../../lib/upload";
 
 const Login = () => {
@@ -58,6 +58,18 @@ const Login = () => {
       const {username, email, password} = Object.fromEntries(formData);
 
       console.log(username)
+
+       // VALIDATE INPUTS
+    if (!username || !email || !password)
+      return toast.warn("Please enter inputs!");
+
+     // VALIDATE UNIQUE USERNAME
+     const usersRef = collection(db, "users");
+     const q = query(usersRef, where("username", "==", username));
+     const querySnapshot = await getDocs(q);
+     if (!querySnapshot.empty) {
+       return toast.warn("Select another username");
+     }
 
       try {
 

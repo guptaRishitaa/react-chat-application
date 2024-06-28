@@ -12,6 +12,7 @@ import { db } from "../../lib/firebase";
 import { useChatStore } from "../../lib/chatStore";
 import { useUserStore } from "../../lib/userStore";
 import upload from "../../lib/upload";
+import { format } from "timeago.js";
 
 const Chat = () => {
   const [chat, setChat] = useState();
@@ -42,12 +43,12 @@ const Chat = () => {
     };
   }, [chatId]);
 
-  console.log(chat);
+  // console.log(chat);
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
     setOpen(false);
-    console.log(e);
+    // console.log(e);
   };
 
   const handleImage = (e) => {
@@ -104,16 +105,15 @@ const Chat = () => {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setImg({
+        file: null,
+        url: "",
+      });
+
+      setText("");
     }
-
-    setImg({
-      file: null,
-      url: "",
-    });
-
-    setText("");
   };
-
   console.log(text);
 
   return (
@@ -141,11 +141,18 @@ const Chat = () => {
             }
             key={message?.createdAt}
           >
-            <img src="./avatar.png" alt="" />
+            {/* <img
+              src={
+                message.senderId === currentUser?.id
+                  ? currentUser.avatar
+                  : user?.avatar || "./avatar.png"
+              }
+              alt=""
+            /> */}
             <div className="texts">
               {message.img && <img src={message.img} alt="" />}
               <p>{message.text}</p>
-              {/* <span>1 min ago</span> */}
+              <span>{format(message.createdAt.toDate())}</span>
             </div>
           </div>
         ))}
