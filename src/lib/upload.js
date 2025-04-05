@@ -34,7 +34,7 @@ import { supabase } from "./supabase"; // Import Supabase
 const upload = async (file) => {
   if (!file) return null;
 
-  const filePath = `avatars/${Date.now()}-${file.name}`; // Unique file path
+  const filePath = `${Date.now()}-${file.name}`; // Unique file path
 
   const { data, error } = await supabase.storage.from("avatars").upload(filePath, file);
 

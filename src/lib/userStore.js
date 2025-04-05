@@ -5,7 +5,7 @@ import { db } from './firebase';
 export const useUserStore = create((set) => ({
     currentUser: null,
     isLoading :true,
-    fetchUserInfo : async (uid) =>{
+    fetchUserInfo : async (uid, retries = 3, delay = 500) =>{
         if(!uid) return set({currentUser:null, isLoading:false});
 
         try {
@@ -14,7 +14,14 @@ export const useUserStore = create((set) => ({
 
       if (docSnap.exists()) {
         set({ currentUser: docSnap.data(), isLoading: false });
-      } else {
+      }
+      else if (retries > 0) {
+        // Retry after a delay if user doc doesn't exist yet
+        setTimeout(() => {
+          useUserStore.getState().fetchUserInfo(uid, retries - 1, delay);
+        }, delay);
+      } 
+       else {
         set({ currentUser: null, isLoading: false });
       }
         } catch (err) {

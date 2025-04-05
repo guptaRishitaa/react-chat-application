@@ -2,9 +2,18 @@ import React from 'react'
 import "./userInfo.css"
 import { useUserStore } from '../../../lib/userStore';
 
+import { useChatStore } from '../../../lib/chatStore';
+import { auth } from '../../../lib/firebase';
+
 const UserInfo = () => {
 
   const {currentUser} = useUserStore();
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, resetChat } =
+      useChatStore();
+   const handleLogout = () => {
+      auth.signOut();
+      resetChat()
+    };
 
   return (
     <div className='userInfo'>
@@ -13,7 +22,9 @@ const UserInfo = () => {
         <h2>{currentUser.username}</h2>
         </div>
         <div className='icons'>
-            <img src='./more.png' alt=''/>
+        <button className="logout" onClick={handleLogout}>
+          Logout
+        </button>
             <img src='./video.png' alt=''/>
             <img src='./edit.png' alt=''/>
         </div>
